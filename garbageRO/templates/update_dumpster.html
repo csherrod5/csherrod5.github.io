@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block content %}
+	<div class="content-section">
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+				<legend class="border-bottom mb-4">Dumpster Info</legend>
+				<div class="form-group">
+					{{ form.location.label(class="form-control-label") }}
+					
+					{% if form.location.errors %}
+						{{ form.location(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.location.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.location(class="form-control form-control-lg") }}
+					{% endif %}
+				</div>
+				<div class="form-group">
+					{{ form.lat.label(class="form-control-label") }}
+					
+					{% if form.lat.errors %}
+						{{ form.lat(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.lat.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.lat(class="form-control form-control-lg") }}
+					{% endif %}
+				</div>
+				<div class="form-group">
+					{{ form.lng.label(class="form-control-label") }}
+					
+					{% if form.lng.errors %}
+						{{ form.lng(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.lng.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.lng(class="form-control form-control-lg") }}
+					{% endif %}
+				</div>
+				<h5><a style="color: #500000; display: inline-block" href="{{ url_for('update_dumpster_location', id=dumpster.id) }}">Click here to set Lattitude and Longitude with a map</a></h5>
+				<div class="form-check">
+						{{ form.full(class="form-check-input") }}
+						{{ form.full.label(class="form-check-label") }}
+				</div>
+			</fieldset>
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}
+			</div>
+			<button type="button" class="btn btn-danger m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+		</form>
+	</div>
+	
+	<!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Dumpster?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('delete_dumpster', id=dumpster.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+	
+{% endblock content %}

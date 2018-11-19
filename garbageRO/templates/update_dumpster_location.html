@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block body %}
+	<body onload="initMarkerMap({{ dumpster.lat }}, {{ dumpster.lng }})">
+{% endblock body %}
+
+{% block content %}
+	<div class="markerMap-container">
+    <h1>Update Lattitude and Longitude</h1>
+    <div id="markerMap" style="height:700px"></div>
+	</div>
+
+	<div id="markerLat" style="display: none">{{ dumpster.lat }}</div>
+	<div id="markerLng" style="display: none">{{ dumpster.lng }}</div>
+	<button class="relative-btn" onclick="updateDumpsterLocation()">Update</button>
+	
+{% endblock content %}

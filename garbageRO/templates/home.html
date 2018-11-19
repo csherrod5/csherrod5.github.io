@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block body %}
+	<body onload="initHomeMap()">
+{% endblock body %}
+
+{% block content %}
+	{% for dumpster in all_dumpsters %}
+		<!-- Hidden forms are used to store database information on the webpage
+		     This information can then be grabbed and used in Javascript by the Google Maps API -->
+		<form name="dump{{ dumpster.id }}">
+			<input type="hidden" name="added" value="{{ dumpster.onRoute }}">
+			<input type="hidden" name="lat" value="{{ dumpster.lat }}">
+			<input type="hidden" name="lng" value="{{ dumpster.lng }}">
+		</form>
+	{% endfor %}
+
+	{% for dumpster in dumpsters.items %}
+		{% if dumpster.full == True %}
+			{% if dumpster.onRoute == False %}
+				<!-- Draw a red outline around a dumpster box if it is full but not on route -->
+				<article class="media home-section-alert">
+			{% else %} <!-- otherwise draw a normal box -->
+				<article class="media home-section">
+			{% endif %}
+		{% else %}
+			<article class="media home-section">
+		{% endif %}
+		<!-- Fill in dumpster information -->
+		<div class="media-body">
+			<div class="dumpster-metadata">
+				<a class="mr-2">ID: {{ dumpster.id }}</a>
+			</div>
+			<h2><a class="dumpster-title" href="{{ url_for('update_dumpster', id=dumpster.id) }}">{{ dumpster.location }}</a></h2>
+			{% if dumpster.full %}
+				{% if dumpster.onRoute %}
+					<p class="article-content" style="font-weight:bold">FULL | ON ROUTE</p>
+				{% else %}
+					<p class="article-content" style="font-weight:bold">FULL | NOT ON ROUTE</p>
+				{% endif %}
+			{% else %}
+				{% if dumpster.onRoute %}
+					<p class="article-content" style="font-weight:bold">NOT FULL | ON ROUTE</p>
+				{% else %}
+					<p class="article-content" style="font-weight:bold">NOT FULL | NOT ON ROUTE</p>
+				{% endif %}
+			{% endif %}
+			{% if current_user.is_authenticated %}
+				<!-- The button to manage dumpster waypoints is only shown to users who are logged in -->
+				{% if dumpster.onRoute %}
+					<button class="absolute-btn" onclick="location.href='{{ url_for('toggle_dumpster', id=dumpster.id) }}'">Remove from route</button>
+				{% else %}
+					<button class="absolute-btn" onclick="location.href='{{ url_for('toggle_dumpster', id=dumpster.id) }}'">Add to route</button>
+				{% endif %}
+			{% endif %}
+		</div>
+		<script>
+
+		</script>
+	</article>
+	{% endfor %}
+
+	{% for page_num in dumpsters.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+		{% if page_num %}
+			{% if dumpsters.page == page_num %}
+				<a class="btn btn-info btn-right mb-4", href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+			{% else %}
+				<a class="btn btn-outline-info btn-right mb-4", href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+			{% endif %}
+		{% else %}
+			...
+		{% endif %}
+	{% endfor %}
+
+	<div class="map-container">
+    <h1>Planned Route</h1>
+    <div id="homeMap" style="height:700px"></div>
+	</div>
+{% endblock content %}

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+	<div class="col-md-4">
+		<div class="content-section">
+			<h3 style="color:#500000">Pickup Filter</h3>
+			<p class='text-muted'>Select a dumpster to see only its pickup history
+				<ul class="list-group">
+					{% for dump in dumpsters %}
+						<a class="list-group-item" href="{{ url_for('filtered_history', id=dump.id) }}"> {{ dump.location }}</a>
+					{% endfor %}
+				</ul>
+			</p>
+		</div>
+	</div>
+
+	{% for pickup in pickups.items %}
+		<article class="media history-section">
+		<div class="media-body">
+			<div class="history-metadata">
+				<a class="mr-2">{{ pickup.date.strftime('%Y-%m-%d') }}</a>
+			</div>
+			<h2><a class="history-title" style="display: inline-block;">{{ pickup.dumpster.location }}</a></h2>
+
+			<button class="btn btn-history-delete" onclick="location.href='{{ url_for('delete_pickup', id=pickup.id) }}'"><i class="fa fa-close history-select"></i></button>
+		</div>
+	</article>
+	{% endfor %}
+
+	{% for page_num in pickups.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+		{% if page_num %}
+			{% if pickups.page == page_num %}
+				<a class="btn btn-info mb-4", href="{{ url_for('history', page=page_num) }}">{{ page_num }}</a>
+			{% else %}
+				<a class="btn btn-outline-info mb-4", href="{{ url_for('history', page=page_num) }}">{{ page_num }}</a>
+			{% endif %}
+		{% else %}
+			...
+		{% endif %}
+	{% endfor %}
+
+{% endblock content %}

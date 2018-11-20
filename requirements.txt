@@ -1,2 +1,5 @@
 Flask
-Werkzeug
+Flask-SQLAlchemy
+Flask-WTF
+Flask-Bcrypt
+Flask-Login
